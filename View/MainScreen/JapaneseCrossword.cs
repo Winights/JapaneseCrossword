@@ -37,7 +37,6 @@ namespace JapaneseCrossword
                     newScreen.ShowDialog();
                     break;   
             }
-
         }
     }
 }

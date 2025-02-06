@@ -51,7 +51,7 @@
             SelectLevelComboBox.Name = "SelectLevelComboBox";
             SelectLevelComboBox.Size = new Size(249, 28);
             SelectLevelComboBox.TabIndex = 1;
-            SelectLevelComboBox.SelectedIndexChanged += this.SelectLevelComboBox_SelectedIndexChanged;
+            SelectLevelComboBox.SelectedIndexChanged += SelectLevelComboBox_SelectedIndexChanged;
             // 
             // ChooseLabel
             // 
@@ -73,6 +73,8 @@
             Controls.Add(ChooseLabel);
             Controls.Add(SelectLevelComboBox);
             Controls.Add(StartButton);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
             Name = "JapaneseCrossword";
             Text = "Japanese Crossword";
             ResumeLayout(false);
