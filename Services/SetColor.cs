@@ -15,6 +15,9 @@ namespace JapaneseCrossword.Services
         /// Устанавливает выбранный цвет в пустое поле, как отображение текущего цвета.
         /// </summary>
         /// <param name="currentColor">Выбранный цвет.</param>
+        /// <param name="grid">Таблица.</param>
+        /// <param name="offsetByY">Индекс смещения по веритикали.</param>
+        /// <param name="offsetByX">Индекс смещения по горизонтали.</param>
         public static void CurrentColor(Color currentColor, DataGridView grid,
             int offsetByY, int offsetByX)
         {

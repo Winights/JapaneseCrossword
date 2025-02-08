@@ -69,94 +69,17 @@ namespace JapaneseCrossword.Levels.Heart
             CreateGrid.ResizeRowsAndColumns(HeartDataGridView);
             _selectedColor = _currentColors.NextColor;
             CreateGrid.SetBoundaries(HeartDataGridView, offsetByX, offsetByY);
-            SetCluesByVertical(offsetByX, offsetByY);
-            SetCluesByHorizontal(offsetByY, offsetByX);
+            SetClues.ByVertical(offsetByX, offsetByY, HeartDataGridView, 
+                _solution, SetColorInClue);
+            SetClues.ByHorizontal(offsetByY, offsetByX, HeartDataGridView, 
+                _solution, SetColorInClue);
             CreateGrid.ResizeForm(HeartDataGridView, this);
             SetColor.CurrentColor(_selectedColor, HeartDataGridView,
                 offsetByY, offsetByX);
         }
-
         //private static string imagePath = "C:\\Users\\fgfgf\\source\\repos\\JapaneseCrossword\\" +
         //    "Resources\\2d43c4570ee8728d74f3fc83f8730b3d.jpg";
         //private int[,] _solution = Pictures.ConvertImageToArray(imagePath);
-
-        /// <summary>
-        /// Устанавливает подсказки по горизонтали.
-        /// </summary>
-        /// <param name="offsetByY">Индекс смещения по веритикали.</param>
-        /// <param name="offsetByX">Индекс смещения по горизонтали.</param>
-        private void SetCluesByHorizontal(int offsetByY, int offsetByX)
-        {
-            for (int i = 0; i < _solution.GetLength(0); i++)
-            {
-                int count = 1;
-                int index = offsetByX - 1;
-                for (int j = 0; j < _solution.GetLength(1) - 1; j++)
-                {
-                    if (_solution[i, j] != 0)
-                    {
-                        if (_solution[i, j] != _solution[i, j + 1])
-                        {
-                            HeartDataGridView.Rows[i + offsetByY].Cells[index].Value
-                                = count;
-                            ChangeColor(_solution[i, j], index, i + offsetByY);
-                            count = 1;
-                            index--;
-                        }
-                        else
-                        {
-                            count++;
-                        }
-                    }
-                }
-
-                if (_solution[i, _solution.GetLength(1) - 1] != 0
-                    && count == 1)
-                {
-                    HeartDataGridView.Rows[i + offsetByY].Cells[index].Value = count;
-                    ChangeColor(_solution[i, _solution.GetLength(1) - 1], index, i + offsetByY);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Устанавливает подсказки по вертикали.
-        /// </summary>
-        /// <param name="offsetByX">Индекс смещения по горизонтали.</param>
-        /// <param name="offsetByY">Индекс смещения по веритикали.</param>
-        private void SetCluesByVertical(int offsetByX, int offsetByY)
-        {
-            for (int i = 0; i < _solution.GetLength(1); i++)
-            {
-                int count = 1;
-                int index = offsetByY - 1;
-                for (int j = 0; j < _solution.GetLength(0) - 1; j++)
-                {
-                    if (_solution[j, i] != 0)
-                    {
-                        if (_solution[j, i] != _solution[j + 1, i])
-                        {
-                            HeartDataGridView.Rows[index].Cells[i + offsetByX].Value
-                                = count;
-                            ChangeColor(_solution[j, i], i + offsetByX, index);
-                            count = 1;
-                            index--;
-                        }
-                        else
-                        {
-                            count++;
-                        }
-                    }
-                }
-
-                if (_solution[_solution.GetLength(0) - 1, i] != 0
-                    && count == 1)
-                {
-                    HeartDataGridView.Rows[index].Cells[i + offsetByX].Value = count;
-                    ChangeColor(_solution[_solution.GetLength(0) - 1, i], i + offsetByX, index);
-                }
-            }
-        }
 
         /// <summary>
         /// Изменяет цвет клеток.
@@ -164,7 +87,7 @@ namespace JapaneseCrossword.Levels.Heart
         /// <param name="value">Значение.</param>
         /// <param name="column">Индекс столбца.</param>
         /// <param name="row">Индекс строки.</param>
-        private void ChangeColor(int value, int column, int row)
+        private void SetColorInClue(int value, int column, int row)
         {
             switch (value)
             {
