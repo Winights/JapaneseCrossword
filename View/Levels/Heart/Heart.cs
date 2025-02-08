@@ -28,11 +28,6 @@ namespace JapaneseCrossword.Levels.Heart
             SetCluesByVertical(offsetByX, offsetByY);
             SetCluesByHorizontal(offsetByY, offsetByX);
             SetCurrentColor(_selectedColor);
-
-            HeartDataGridView.Width = 52 * HeartDataGridView.ColumnCount;
-            HeartDataGridView.Height = 50 * HeartDataGridView.Rows.Count;
-            this.ClientSize = new System.Drawing.Size(50 * HeartDataGridView.ColumnCount,
-                53 * (HeartDataGridView.Rows.Count + 1));
         }
 
         //private static string imagePath = "C:\\Users\\fgfgf\\source\\repos\\JapaneseCrossword\\" +
@@ -109,6 +104,11 @@ namespace JapaneseCrossword.Levels.Heart
             {
                 row.Height = 50;
             }
+
+            HeartDataGridView.Width = 52 * HeartDataGridView.ColumnCount;
+            HeartDataGridView.Height = 50 * HeartDataGridView.Rows.Count;
+            this.ClientSize = new System.Drawing.Size(50 * HeartDataGridView.ColumnCount,
+                53 * (HeartDataGridView.Rows.Count + 1));
         }
 
         /// <summary>
@@ -135,6 +135,7 @@ namespace JapaneseCrossword.Levels.Heart
         /// <summary>
         /// Получает максимальный индекс для подсказок по веритикали.
         /// </summary>
+        /// <returns>Индекс по горизонтали, с которого начинается игровое поле.</returns>
         private int GetOffsetByVertical()
         {
             int maxIndex = 0;
@@ -157,7 +158,8 @@ namespace JapaneseCrossword.Levels.Heart
                         }
                     }
                 }
-                if (_solution[i, _solution.GetLength(0) - 1] != 0 && count == 1)
+                if (_solution[i, _solution.GetLength(0) - 1] != 0 
+                    && count == 1)
                 {
                     index++;
                 }
@@ -172,6 +174,7 @@ namespace JapaneseCrossword.Levels.Heart
         /// <summary>
         /// Получает максимальный индекс для подсказок по горизонтали.
         /// </summary>
+        /// <returns>Индекс по вертикали, с которого начинается игровое поле.</returns>
         private int GetOffsetByHorizontal()
         {
             int maxIndex = 0;
@@ -195,7 +198,8 @@ namespace JapaneseCrossword.Levels.Heart
                        
                     }
                 }
-                if (_solution[_solution.GetLength(0) - 1, i] != 0 && count == 1)
+                if (_solution[_solution.GetLength(0) - 1, i] != 0 
+                    && count == 1)
                 {
                     index++;
                 }
@@ -210,20 +214,23 @@ namespace JapaneseCrossword.Levels.Heart
         /// <summary>
         /// Изменяет цвет клеток.
         /// </summary>
-        private void ChangeColor(int value, int index, int row)
+        /// <param name="value">Значение.</param>
+        /// <param name="column">Индекс столбца.</param>
+        /// <param name="row">Индекс строки.</param>
+        private void ChangeColor(int value, int column, int row)
         {
             switch (value)
             {
                 case 1:
-                    HeartDataGridView.Rows[row].Cells[index].Style.BackColor =
+                    HeartDataGridView.Rows[row].Cells[column].Style.BackColor =
                         Color.Black;
-                    HeartDataGridView.Rows[row].Cells[index].Style.ForeColor =
+                    HeartDataGridView.Rows[row].Cells[column].Style.ForeColor =
                         Color.White;
                     break;
                 case 2:
-                    HeartDataGridView.Rows[row].Cells[index].Style.BackColor =
+                    HeartDataGridView.Rows[row].Cells[column].Style.BackColor =
                         Color.Red;
-                    HeartDataGridView.Rows[row].Cells[index].Style.ForeColor =
+                    HeartDataGridView.Rows[row].Cells[column].Style.ForeColor =
                         Color.Black;
                     break;
             }
@@ -232,18 +239,21 @@ namespace JapaneseCrossword.Levels.Heart
         /// <summary>
         /// Устанавливает значение в матрице с решением игрока.
         /// </summary>
-        private void SetUserSolution(Color selectedColor, int row, int cell)
+        /// <param name="selectedColor">Выбранный цвет.</param>
+        /// <param name="row">Индекс строки.</param>
+        /// <param name="column">Индекс столбца.</param>
+        private void SetUserSolution(Color selectedColor, int row, int column)
         {
             switch (selectedColor.Name)
             {
+                case "White":
+                    _userSolution[row - offsetByY, column - offsetByX] = 0;
+                    break;
                 case "Black":
-                    _userSolution[row - offsetByY, cell - offsetByX] = 1;
+                    _userSolution[row - offsetByY, column - offsetByX] = 1;
                     break;
                 case "Red":
-                    _userSolution[row - offsetByY, cell - offsetByX] = 2;
-                    break;
-                case "White":
-                    _userSolution[row - offsetByY, cell - offsetByX] = 0;
+                    _userSolution[row - offsetByY, column - offsetByX] = 2;
                     break;
             }
         }
@@ -251,20 +261,23 @@ namespace JapaneseCrossword.Levels.Heart
         /// <summary>
         /// Устанавливает подсказки по горизонтали.
         /// </summary>
-        private void SetCluesByHorizontal(int maxIndex, int offset)
+        /// <param name="offsetByY">Индекс смещения по веритикали.</param>
+        /// <param name="offsetByX">Индекс смещения по горизонтали.</param>
+        private void SetCluesByHorizontal(int offsetByY, int offsetByX)
         {
             for (int i = 0; i < _solution.GetLength(0); i++)
             {
                 int count = 1;
-                int index = offset - 1;
+                int index = offsetByX - 1;
                 for (int j = 0; j < _solution.GetLength(1) - 1; j++)
                 {
                     if (_solution[i, j] != 0)
                     {
                         if (_solution[i, j] != _solution[i, j + 1])
                         {
-                            HeartDataGridView.Rows[i + maxIndex].Cells[index].Value = count;
-                            ChangeColor(_solution[i, j], index, i + maxIndex);
+                            HeartDataGridView.Rows[i + offsetByY].Cells[index].Value
+                                = count;
+                            ChangeColor(_solution[i, j], index, i + offsetByY);
                             count = 1;
                             index--;
                         }   
@@ -275,10 +288,11 @@ namespace JapaneseCrossword.Levels.Heart
                     }
                 }
 
-                if (_solution[i, _solution.GetLength(1) - 1] != 0 && count == 1)
+                if (_solution[i, _solution.GetLength(1) - 1] != 0 
+                    && count == 1)
                 {
-                    HeartDataGridView.Rows[i + maxIndex].Cells[index].Value = count;
-                    ChangeColor(_solution[i, _solution.GetLength(1) - 1], index, i + maxIndex);
+                    HeartDataGridView.Rows[i + offsetByY].Cells[index].Value = count;
+                    ChangeColor(_solution[i, _solution.GetLength(1) - 1], index, i + offsetByY);
                 }
             }
         }
@@ -286,20 +300,23 @@ namespace JapaneseCrossword.Levels.Heart
         /// <summary>
         /// Устанавливает подсказки по вертикали.
         /// </summary>
-        private void SetCluesByVertical(int maxIndex, int offset)
+        /// <param name="offsetByX">Индекс смещения по горизонтали.</param>
+        /// <param name="offsetByY">Индекс смещения по веритикали.</param>
+        private void SetCluesByVertical(int offsetByX, int offsetByY)
         {
             for (int i = 0; i < _solution.GetLength(1); i++)
             {
                 int count = 1;
-                int index = offset - 1;
+                int index = offsetByY - 1;
                 for (int j = 0; j < _solution.GetLength(0) - 1; j++)
                 {
                     if (_solution[j, i] != 0)
                     {
                         if(_solution[j, i] != _solution[j + 1, i])
                         {
-                            HeartDataGridView.Rows[index].Cells[i + maxIndex].Value = count;
-                            ChangeColor(_solution[j, i], i + maxIndex, index);
+                            HeartDataGridView.Rows[index].Cells[i + offsetByX].Value
+                                = count;
+                            ChangeColor(_solution[j, i], i + offsetByX, index);
                             count = 1;
                             index--;
                         }
@@ -310,17 +327,19 @@ namespace JapaneseCrossword.Levels.Heart
                     }
                 }
 
-                if (_solution[_solution.GetLength(0) - 1, i] != 0 && count == 1)
+                if (_solution[_solution.GetLength(0) - 1, i] != 0 
+                    && count == 1)
                 {
-                    HeartDataGridView.Rows[index].Cells[i + maxIndex].Value = count;
-                    ChangeColor(_solution[_solution.GetLength(0) - 1, i], i + maxIndex, index);
+                    HeartDataGridView.Rows[index].Cells[i + offsetByX].Value = count;
+                    ChangeColor(_solution[_solution.GetLength(0) - 1, i], i + offsetByX, index);
                 }
             }
         }
 
         /// <summary>
-        /// Устанавливает выбранный цвет.
+        /// Устанавливает выбранный цвета в подсказки.
         /// </summary>
+        /// <param name="currentColor">Выбранный цвет.</param>
         private void SetCurrentColor(Color currentColor)
         {
             for (int i = 0; i < offsetByY; i++)
@@ -334,8 +353,10 @@ namespace JapaneseCrossword.Levels.Heart
         }
 
         /// <summary>
-        /// Проверка, что строка заполнена правильно.
+        /// Проверяет, что строка заполнена правильно.
         /// </summary>
+        /// <param name="currentRow">Выбранная строка.</param>
+        /// <returns>false, если заполнено неправильно, иначе true.</returns>
         private bool ExaminationHorizontal(int currentRow)
         {
             for (int i = currentRow; i < currentRow+1; i++)
@@ -352,13 +373,15 @@ namespace JapaneseCrossword.Levels.Heart
         }
 
         /// <summary>
-        /// Проверка, что столбец заполнен правильно.
+        /// Проверяет, что столбец заполнен правильно.
         /// </summary>
-        private bool ExaminationVertical(int currentRow)
+        /// <param name="currentColumn">Выбранный столбец.</param>
+        /// <returns>false, если заполнено неправильно, иначе true.</returns>
+        private bool ExaminationVertical(int currentColumn)
         {
             for (int i = 0; i < _solution.GetLength(1); i++)
             {
-                for (int j = currentRow; j < currentRow+1; j++)
+                for (int j = currentColumn; j < currentColumn+1; j++)
                 {
                     if (_solution[i, j - offsetByX] != _userSolution[i, j - offsetByX])
                     {
@@ -370,8 +393,9 @@ namespace JapaneseCrossword.Levels.Heart
         }
 
         /// <summary>
-        /// Установка крестиков по горизонтали.
+        /// Установливает крестики по горизонтали.
         /// </summary>
+        /// <param name="currentRow">Выбранная строка.</param>
         private void SetCrossByHorizontal(int currentRow)
         {
             bool isCorrect = ExaminationHorizontal(currentRow);
@@ -391,8 +415,9 @@ namespace JapaneseCrossword.Levels.Heart
         }
 
         /// <summary>
-        /// Установка крестиков по вертикали.
+        /// Установливает крестики по вертикали.
         /// </summary>
+        /// <param name="currentColumn">Выбранный столбец.</param>
         private void SetCrossByVertical(int currentColumn)
         {
             bool isCorrect = ExaminationVertical(currentColumn);
@@ -446,7 +471,8 @@ namespace JapaneseCrossword.Levels.Heart
             {
                 int currentRow = HeartDataGridView.CurrentCellAddress.Y;
                 int currentColumn = HeartDataGridView.CurrentCellAddress.X;
-                HeartDataGridView.Rows[currentRow].Cells[currentColumn].Style.BackColor = Color.White;
+                HeartDataGridView.Rows[currentRow].Cells[currentColumn].Style.BackColor 
+                    = Color.White;
                 SetUserSolution(Color.White, currentRow, currentColumn);
                 SetCrossByHorizontal(currentRow);
                 SetCrossByVertical(currentColumn);
@@ -463,13 +489,15 @@ namespace JapaneseCrossword.Levels.Heart
                     if (_solution[i, j] != _userSolution[i, j])
                     {
                         isCorrect = false;
+                        break;
                     }
                 }
             }
 
             if (!isCorrect)
             {
-                MessageBox.Show("К сожалению, кроссворд разгандан не полностью. Попробуйте еще раз.");
+                MessageBox.Show("К сожалению, кроссворд разгандан не полностью. " +
+                    "Попробуйте еще раз.");
                 return;
             }
             MessageBox.Show("Поздравляю! Кроссворд полностью разгадан!");
@@ -497,10 +525,12 @@ namespace JapaneseCrossword.Levels.Heart
             }
             else
             {
-                e.AdvancedBorderStyle.Top = (e.RowIndex == offsetByY && e.ColumnIndex >= offsetByX)
+                e.AdvancedBorderStyle.Top = (e.RowIndex == offsetByY 
+                    && e.ColumnIndex >= offsetByX)
                     ? DataGridViewAdvancedCellBorderStyle.OutsetDouble
                     : DataGridViewAdvancedCellBorderStyle.None;
-                e.AdvancedBorderStyle.Left = (e.RowIndex >= offsetByY && e.ColumnIndex == offsetByX)
+                e.AdvancedBorderStyle.Left = (e.RowIndex >= offsetByY 
+                    && e.ColumnIndex == offsetByX)
                     ? DataGridViewAdvancedCellBorderStyle.OutsetDouble
                     : DataGridViewAdvancedCellBorderStyle.None;
             }

@@ -8,17 +8,29 @@ namespace JapaneseCrossword.Model
 {
     public class Colors
     {
-        private readonly int _capacity;
+        /// <summary>
+        /// Количство элементов списка.
+        /// </summary>
+        private readonly int _count;
 
+        /// <summary>
+        /// Список с доступными цветами.
+        /// </summary>
         public List<Color> AllColors { get; set; }
 
+        /// <summary>
+        /// Индекс на следующий цвет.
+        /// </summary>
         private int _nextIndex;
 
+        /// <summary>
+        /// Возвращает следующий цвет.
+        /// </summary>
         public Color NextColor
         {
             get
             {
-                if (_nextIndex >= _capacity)
+                if (_nextIndex >= _count)
                 {
                     _nextIndex = 0;
                 }
@@ -26,9 +38,13 @@ namespace JapaneseCrossword.Model
             }
         }
 
+        /// <summary>
+        /// Создаёт экземпляр класса <see cref="Colors"/>.
+        /// </summary>
+        /// <param name="colors">Список цветов.</param>
         public Colors(List<Color> colors)
         {
-            _capacity = colors.Count;
+            _count = colors.Count;
             AllColors = colors;
             _nextIndex = 0;
         }
