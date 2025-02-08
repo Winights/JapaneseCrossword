@@ -14,8 +14,6 @@ namespace JapaneseCrossword.Model
 
         private int _nextIndex;
 
-        private int _prevIndex;
-
         public Color NextColor
         {
             get
@@ -33,7 +31,6 @@ namespace JapaneseCrossword.Model
             _capacity = colors.Count;
             AllColors = colors;
             _nextIndex = 0;
-            _prevIndex = 0;
         }
     }
 }
